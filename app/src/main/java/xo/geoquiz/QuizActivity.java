@@ -2,6 +2,7 @@ package xo.geoquiz;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,10 +15,13 @@ import xo.objects.TrueFalse;
 
 public class QuizActivity extends Activity
 {
+    private static final String TAG = "QuizActivity";
+
     private Button btnTrue;
     private Button btnFalse;
     private TextView ctrlQuestion;
     private Button btnNext;
+    private Button btnPrev;
 
     private TrueFalse[] questionBank = new TrueFalse[] {
                                                 new TrueFalse(R.string.question_mideast, false),
@@ -29,11 +33,21 @@ public class QuizActivity extends Activity
     private int currentIndex = 0;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate(Bundle savedInstanceState) called");
+
         setContentView(R.layout.activity_quiz);
 
         ctrlQuestion = (TextView)findViewById(R.id.question_text_view);
+        ctrlQuestion.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(QuizActivity.this, "Why do you click me?", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         btnTrue = (Button)findViewById(R.id.true_button);
         btnTrue.setOnClickListener(new View.OnClickListener() {
@@ -48,6 +62,23 @@ public class QuizActivity extends Activity
             @Override
             public void onClick(View v) {
                 checkAnswer(false);
+            }
+        });
+
+        btnPrev = (Button)findViewById(R.id.ctrlPrev);
+        btnPrev.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                currentIndex = currentIndex - 1;
+                if (currentIndex == -1)
+                {
+                    currentIndex = questionBank.length - 1;
+                    if (currentIndex == -1) currentIndex = questionBank.length - 1;
+                }
+
+                updateQuestion();
             }
         });
 
@@ -96,9 +127,40 @@ public class QuizActivity extends Activity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+
+    }
+
 }
